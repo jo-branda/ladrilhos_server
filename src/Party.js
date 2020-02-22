@@ -88,8 +88,10 @@ class Party {
   setUpEvents() {
     this.p1.socket.on("place_tile", ({ x, y, tileType }) => {
       // if (!this.p1.myTurn) return;
-
+      var tempCount = this.checkBoardLength();
       this.addTile({ x, y, tileType });
+      console.log("------>" + this.checkBoardLength());
+      if (this.checkBoardLength() == tempCount) return;
       this.p1.points += 5;
       this.broadCastPlayersPoints();
     });
@@ -102,8 +104,10 @@ class Party {
 
     this.p2.socket.on("place_tile", ({ x, y, tileType }) => {
       // if (!this.p2.myTurn) return;
-
+      var tempCount = this.checkBoardLength();
       this.addTile({ x, y, tileType });
+      console.log("------>" + this.checkBoardLength());
+      if (this.checkBoardLength() == tempCount) return;
       this.p2.points += 5;
       this.broadCastPlayersPoints();
     });
@@ -125,9 +129,17 @@ class Party {
     this.broadcastBoardState();
     console.log(this.board);
   }
+  checkBoardLength() {
+    var boardCount = 0;
+    for (var i in this.board) {
+      if (this.board.hasOwnProperty(i)) boardCount++;
+    }
+    return boardCount;
+  }
 
   broadcastBoardState() {
     this.p1.socket.broadcast.emit("board_state", { ...this.board });
+
     this.p2.socket.broadcast.emit("board_state", { ...this.board });
   }
 
